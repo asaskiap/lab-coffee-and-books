@@ -1,2 +1,45 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<h1>BOOKS and COFFEE</h1>
+<p>Two things you can't live without...</p>
+<button><a href="/create">Add a Place.</a></button>
+
+<div>
+    {{#each places}}
+    <h4><a href="/places/{{id}}">{{name}}</a></h4>
+    <p>A {{type}}</p>
+    <button><a href="/delete/{{id}}">Delete place.</a></button>
+    <button><a href="/update/{{id}}">Edit place.</a></button>
+
+    {{/each}}
+</div>
+
+<div id="map" style="height: 500px;"></div>
+
+<script>
+  function createMap () {
+    const mapElement = document.getElementById('map');
+    const map = new google.maps.Map(mapElement, {
+      center: {
+        lat: 50.8,
+        lng: 12.75
+      },
+      zoom: 8
+    });
+
+
+    const places = {{{ json places }}};
+    for (let place of places) {
+      const marker = new google.maps.Marker({
+        position: {
+          lat: place.location.coordinates[1],
+          lng: place.location.coordinates[0]
+        },
+        map: map
+      })
+      marker.addListener('click', () => {
+        window.location = `/places/${place._id}`;
+      });
+    }
+  }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0DqXPpPxcJTpR7EvVNsWAUVTKLQZclUw&callback=createMap" defer></script>
